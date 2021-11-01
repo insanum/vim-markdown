@@ -110,12 +110,16 @@ syn match  mkdCode         /^\s*\n\(\(\s\{8,}[^ ]\|\t\t\+[^\t]\).*\n\)\+/
 syn match  mkdCode         /\%^\(\(\s\{4,}[^ ]\|\t\+[^\t]\).*\n\)\+/
 syn match  mkdCode         /^\s*\n\(\(\s\{4,}[^ ]\|\t\+[^\t]\).*\n\)\+/ contained
 syn match  mkdReference    /\v\s@<=\[\[(\w|\s)+\]\]\ze(\s|$)/ contained
-syn match  mkdHashTag      /\v\s@<=#(\w+)+/ contained
+syn match  mkdHashTag       /\v\s@<=#(\w+)\ze(\s|$)/ contained
+syn match  mkdHashTagHigh   /\v\s@<=#high\ze(\s|$)/ contained
+syn match  mkdHashTagMedium /\v\s@<=#medium\ze(\s|$)/ contained
+syn match  mkdHashTagLow    /\v\s@<=#low\ze(\s|$)/ contained
 syn match  mkdDate         /\v\s@<=(\(|\[)?(\d\d)?\d\d(\/|-)\d\d(\/|-)\d\d(\)|\])?(\s|$)/ contained
 syn match  mkdChecked      /x/ contained
 syn match  mkdCheckbox     /\v\s@<=\[.\]\ze\s/ contained contains=mkdChecked
+syn match  mkdTextCompleted /\v(\s*-\s\[x\]\s)@<=.*/ contained contains=mkdHashTag,mkdHashTagHigh,mkdHashTagMedium,mkdHashTagLow,mkdDate
 syn match  mkdListItem     /^\s*\%([-*+]\|\d\+\.\)\ze\s\+/ contained
-syn region mkdListItemLine start="^\s*\%([-*+]\|\d\+\.\)\s\+" end="$" oneline contains=@mkdNonListItem,mkdListItem,mkdCheckbox,@Spell
+syn region mkdListItemLine start="^\s*\%([-*+]\|\d\+\.\)\s\+" end="$" oneline contains=@mkdNonListItem,mkdListItem,mkdCheckbox,mkdTextCompleted,@Spell
 syn region mkdNonListItemBlock start="\(\%^\(\s*\([-*+]\|\d\+\.\)\s\+\)\@!\|\n\(\_^\_$\|\s\{4,}[^ ]\|\t+[^\t]\)\@!\)" end="^\(\s*\([-*+]\|\d\+\.\)\s\+\)\@=" contains=@mkdNonListItem,@Spell
 syn match  mkdRule         /^\s*\*\s\{0,1}\*\s\{0,1}\*\(\*\|\s\)*$/
 syn match  mkdRule         /^\s*-\s\{0,1}-\s\{0,1}-\(-\|\s\)*$/
@@ -160,7 +164,7 @@ if get(g:, 'vim_markdown_strikethrough', 0)
     HtmlHiLink mkdStrike        htmlStrike
 endif
 
-syn cluster mkdNonListItem contains=@htmlTop,htmlItalic,htmlBold,htmlBoldItalic,mkdFootnotes,mkdInlineURL,mkdLink,mkdLinkDef,mkdLineBreak,mkdBlockquote,mkdCode,mkdRule,htmlH1,htmlH2,htmlH3,htmlH4,htmlH5,htmlH6,mkdMath,mkdStrike,mkdReference,mkdHashTag,mkdDate
+syn cluster mkdNonListItem contains=@htmlTop,htmlItalic,htmlBold,htmlBoldItalic,mkdFootnotes,mkdInlineURL,mkdLink,mkdLinkDef,mkdLineBreak,mkdBlockquote,mkdCode,mkdRule,htmlH1,htmlH2,htmlH3,htmlH4,htmlH5,htmlH6,mkdMath,mkdStrike,mkdReference,mkdHashTag,mkdHashTagHigh,mkdHashTagMedium,mkdHashTagLow,mkdDate
 
 "highlighting for Markdown groups
 HtmlHiLink mkdString        String
@@ -184,9 +188,13 @@ HtmlHiLink mkdLinkTitle     htmlString
 HtmlHiLink mkdDelimiter     Delimiter
 HtmlHiLink mkdReference     htmlLink
 HtmlHiLink mkdHashTag       Todo
+HtmlHiLink mkdHashTagHigh   Todo
+HtmlHiLink mkdHashTagMedium Todo
+HtmlHiLink mkdHashTagLow    Todo
 HtmlHiLink mkdDate          PreProc
 HtmlHiLink mkdChecked       Todo
 HtmlHiLink mkdCheckbox      Todo
+HtmlHiLink mkdTextCompleted Comment
 
 let b:current_syntax = "mkd"
 
